@@ -61,6 +61,15 @@ namespace SimpleMedia {
             bitmap = new byte[header.gsize];
         }
 
+        public void SetPixel(int x, int y, int red, int green, int blue) {
+            if (x < 0 || y < 0 || header.width <= x || header.height <= y) return;
+            int ptr = y * header.width * 4 + x * 4;
+            bitmap[ptr + 0] = (byte)blue;
+            bitmap[ptr + 1] = (byte)green;
+            bitmap[ptr + 2] = (byte)red;
+            bitmap[ptr + 3] = 0;
+        }
+
         public void SetPixelRGB565(int x, int y, ushort rgb565) {
             if (x < 0 || y < 0 || header.width <= x || header.height <= y) return;
             y = header.height - 1 - y;
@@ -70,11 +79,7 @@ namespace SimpleMedia {
             r = (byte)((r << 3) | (r >> 2));
             g = (byte)((g << 2) | (g >> 4));
             b = (byte)((b << 3) | (b >> 2));
-            int ptr = y * header.width * 4 + x * 4;
-            bitmap[ptr + 0] = b;
-            bitmap[ptr + 1] = g;
-            bitmap[ptr + 2] = r;
-            bitmap[ptr + 3] = 0;
+            SetPixel(x, y, r, g, b);
         }
 
         public void WriteFile(string path) {
